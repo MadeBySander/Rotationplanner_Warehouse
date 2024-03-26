@@ -5,7 +5,6 @@ import json
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
-
 # File paths
 workers_file = 'workers_data.json'
 assigned_file = 'assigned_data.xlsx'
@@ -306,7 +305,14 @@ assigned_stations_intervals = {interval: [] for interval in intervals_day_shift 
 # Define a function to check station availability and avoid double assignment
 def check_station_availability(station, interval, assigned_stations_intervals):
     return station not in assigned_stations_intervals[interval]
-# Function to assign workers to stations randomly
+
+tm_name_label = tk.Label(window, text="Team Manager:", bg="lightgrey", fg="black")
+tm_name_label.grid(row=0, column=0, padx=pad_x, pady=pad_y, sticky='e')  # Adjust row and column as needed
+
+tm_name_entry = tk.Entry(window)
+tm_name_entry.grid(row=0, column=1, padx=pad_x, pady=pad_y, sticky='w')  # Adjust row and column as needed
+
+
 # Function to assign workers to stations and save data to Excel
 def assign_workers():
     global assigned_stations_intervals
@@ -363,10 +369,11 @@ def assign_workers():
                 unassigned_worker = unassigned_evening_workers.pop()
                 assigned_workers_list.append((unassigned_worker, "No station available", interval))
 
-    # Further processing or saving the assigned workers as needed
+    # Get the team manager's name from the entry field
+    team_manager_name = tm_name_entry.get()
 
-    team_manager_name = tm_name_entry.get()  # Get the team manager's name
-    save_assigned_data(assigned_workers_list, team_manager_name)  # Save the assigned data
+    # Save the assigned data with the team manager's name
+    save_assigned_data(assigned_workers_list, team_manager_name)
 
     # Update the assigned workers label to display the assigned workers
     assigned_workers_text = "\n".join(
@@ -374,6 +381,7 @@ def assign_workers():
     assigned_workers_var.set(assigned_workers_text)
 
     messagebox.showinfo("Success", "Workers assigned successfully.")
+
 
 
 # Button to trigger assignment with a colored background
@@ -478,6 +486,7 @@ def save_assigned_data(data_list, team_manager_name):
     assigned_file = 'assigned_data.xlsx'
     wb.save(assigned_file)
     messagebox.showinfo("Save", "Assigned data saved to Excel successfully.")
+
 
 
 
