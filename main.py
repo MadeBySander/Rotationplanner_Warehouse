@@ -32,9 +32,47 @@ except FileNotFoundError:
 
 # Sample data
 # Sample data
-stations = ['Pak 5 (Truck)', 'Pak 5 (Gulv)', 'Pak 1', 'Pak 2', 'Pak 3', 'Pak 4', 'Mezzanin', 'Truck Job', 'Pluk 1', 'Pluk 2', 'Pluk 3', 'Flow 1', 'Make 301', 'Make 302', 'Make 303', 'Make 401', 'Make 402', 'Make 5', 'Ditch patch kontor', 'Ditch patch', ]
-intervals_day_shift = ['6-10', '10-14']  # Updated intervals for day shift
-intervals_evening_shift = ['14-18', '18-22:30']  # Updated intervals for evening shift
+stations = ['Pak 5 (Truck)',
+            'Pak 5 (Gulv)',
+            'Bånde Gulv',
+            'Pak totes bord 1',
+            'Pak totes bord 2',
+            'Pak totes bord 3',
+            'Pak totes bord 4',
+            'Mezzanin',
+            'Pluk 1',
+            'Pluk 2',
+            'Pluk 3',
+            'Truck job 1',
+            'Truck job 2',
+            'Recv 1',
+            'Recv 2',
+            'Decant 1',
+            'Decant 2',
+            'MC Recv/Decant',
+            'Flow 8', 'Flow 1',
+            'Flow 2 402',
+            'Flow 403',
+            'Flow 404',
+            'Flow 3 301',
+            'Flow 3 302',
+            'Flow 3 303',
+            'Flow 4 Maskine',
+            'Flow 4 Pak 1',
+            'Flow 4 Pak 2',
+            'Flow 5',
+            'Flow 6',
+            'Flow 10',
+            'Automatikmontør medhjælper',
+            'Matriale / Kanban optælling',
+            'Support 1',
+            'Support 2',
+            'Kontor',
+            'Dispatch',
+            'Ekstra opgave gå til TL',
+            'Retur']
+intervals_day_shift = ['6:00-8:00', '8:00-10:00', '10:00-12:00', '12:00-14:00']  # Updated intervals for day shift
+intervals_evening_shift = ['14:00-16:00', '16-18:00', '18:00-20:00', '20:00-22:30']  # Updated intervals for evening shift
 
 
 # Create the main window
@@ -49,17 +87,17 @@ pad_y = 5
 
 # Labels for the checkboxes
 day_frame_label = tk.Label(window, text="Day Shift Workers")
-day_frame_label.grid(row=1, column=0, padx=pad_x, pady=pad_y)
+day_frame_label.grid(row=3, column=0, padx=pad_x, pady=pad_y)
 
 evening_frame_label = tk.Label(window, text="Evening Shift Workers")
-evening_frame_label.grid(row=1, column=1, padx=pad_x, pady=pad_y)
+evening_frame_label.grid(row=3, column=1, padx=0, pady=0)
 
 # Display the checkboxes with padding
 day_worker_frame = tk.Frame(window)
-day_worker_frame.grid(row=3, column=0, padx=pad_x, pady=pad_y)
+day_worker_frame.grid(row=5, column=0, padx=pad_x, pady=pad_y)
 
 evening_worker_frame = tk.Frame(window)
-evening_worker_frame.grid(row=3, column=1, padx=pad_x, pady=pad_y)
+evening_worker_frame.grid(row=5, column=1, padx=pad_x, pady=pad_y)
 
 day_checkboxes = []
 evening_checkboxes = []
@@ -86,12 +124,12 @@ def toggle_check_all_workers(shift_checkboxes):
 # Button to toggle check/uncheck for all day shift workers
 toggle_check_all_day_button = tk.Button(window, text="Check/Uncheck All Day Workers",
                                         command=lambda: toggle_check_all_workers(day_checkboxes))
-toggle_check_all_day_button.grid(row=2, column=0, padx=pad_x, pady=pad_y)
+toggle_check_all_day_button.grid(row=4, column=0, padx=pad_x, pady=pad_y)
 
 # Button to toggle check/uncheck for all evening shift workers
 toggle_check_all_evening_button = tk.Button(window, text="Check/Uncheck All Evening Workers",
                                             command=lambda: toggle_check_all_workers(evening_checkboxes))
-toggle_check_all_evening_button.grid(row=2, column=1, padx=pad_x, pady=pad_y)
+toggle_check_all_evening_button.grid(row=4, column=1, padx=pad_x, pady=pad_y)
 
 # Function to create a button to edit worker settings
 def create_edit_button(frame, worker, shift, row_num):
@@ -204,26 +242,6 @@ for i, worker in enumerate(workers['Evening Shift']):
 # Shift selection buttons with colors
 shift_var = tk.StringVar()
 
-# Static stations display with colors
-for i, station in enumerate(stations):
-    if i < len(stations) // 2:
-        bg_color = 'lightyellow' if i % 2 == 0 else 'lightcyan'  # Alternating background colors
-        tk.Label(window, text=station, bg=bg_color).grid(row=i + 1, column=3, padx=1, pady=1)
-
-        # Add label for workers under each station
-        workers_label = tk.Label(window, text=", ".join(workers['Day Shift'].keys()), bg=bg_color, wraplength=150)
-        workers_label.grid(row=i + 1, column=4, padx=pad_x, pady=pad_y)
-    else:
-        j = i - len(stations) // 2
-        bg_color = 'lightyellow' if j % 2 == 0 else 'lightcyan'  # Alternating background colors
-        tk.Label(window, text=station, bg=bg_color).grid(row=j + 1, column=5, padx=pad_x, pady=pad_y)
-
-        # Add label for workers under each station
-        workers_label = tk.Label(window, text=", ".join(workers['Evening Shift'].keys()), bg=bg_color, wraplength=150)
-        workers_label.grid(row=j + 1, column=6, padx=pad_x, pady=pad_y)
-
-
-
 
 # Create a StringVar to update the assigned workers dynamically
 assigned_workers_var = tk.StringVar()
@@ -234,6 +252,8 @@ def create_worker():
     # Create a new window for creating a worker
     new_window = tk.Toplevel(window)
     new_window.title("Create Worker")
+
+    new_window.geometry("300x400")  # Set your desired width and height here
 
     # Label and entry for worker's name
     tk.Label(new_window, text="Enter worker's name:").pack()
@@ -249,7 +269,7 @@ def create_worker():
     # Choose stations from a listbox
     tk.Label(new_window, text="Choose stations:").pack()
     stations_var = tk.StringVar(value=stations)
-    stations_listbox = tk.Listbox(new_window, listvariable=stations_var, selectmode=tk.MULTIPLE, height=4)
+    stations_listbox = tk.Listbox(new_window, listvariable=stations_var, selectmode=tk.EXTENDED, height=10)
     stations_listbox.pack()
 
     # Function to handle creating the worker after input validation
@@ -295,11 +315,12 @@ def create_worker():
 
     # Button to create the worker after validation
     create_button = tk.Button(new_window, text="Create Worker", command=create_worker_action)
-    create_button.pack()
+    create_button.pack(padx=10, pady=20)  # Adjust the values as per your requirements
+
 
 # Button to create a new worker
 create_worker_button = tk.Button(window, text="Create Worker", command=create_worker, bg='lightgrey')
-create_worker_button.grid(row=4, column=0, columnspan=1, padx=pad_x, pady=pad_y)
+create_worker_button.grid(row=6, column=0, columnspan=1, padx=pad_x, pady=pad_y)
 assigned_stations_intervals = {interval: [] for interval in intervals_day_shift + intervals_evening_shift}
 
 # Define a function to check station availability and avoid double assignment
@@ -312,8 +333,22 @@ tm_name_label.grid(row=0, column=0, padx=pad_x, pady=pad_y, sticky='e')  # Adjus
 tm_name_entry = tk.Entry(window)
 tm_name_entry.grid(row=0, column=1, padx=pad_x, pady=pad_y, sticky='w')  # Adjust row and column as needed
 
+back_up_label = tk.Label(window, text="Back up:", bg="lightgrey", fg="black")
+back_up_label.grid(row=1, column=0, padx=pad_x, pady=pad_y, sticky='e')  # Adjust row and column as needed
+
+back_up_name_entry = tk.Entry(window)
+back_up_name_entry.grid(row=1, column=1, padx=pad_x, pady=pad_y, sticky='w')  # Adjust row and column as needed
+
+late_tm_label = tk.Label(window, text="Sen Vagt - Aften", bg="lightgrey", fg="black")
+late_tm_label.grid(row=2, column=0, padx=pad_x, pady=pad_y, sticky='e')  # Adjust row and column as needed
+
+late_tm_entry = tk.Entry(window)
+late_tm_entry.grid(row=2, column=1, padx=pad_x, pady=pad_y, sticky='w')  # Adjust row and column as needed
+
+
 
 # Function to assign workers to stations and save data to Excel
+
 def assign_workers():
     global assigned_stations_intervals
 
@@ -321,13 +356,11 @@ def assign_workers():
     assigned_stations_intervals = {interval: [] for interval in intervals_day_shift + intervals_evening_shift}
 
     selected_day_workers = [worker for worker, var in zip(workers['Day Shift'], day_checkboxes) if var.get()]
-    selected_evening_workers = [worker for worker, var in zip(workers['Evening Shift'], evening_checkboxes) if
-                                var.get()]
+    selected_evening_workers = [worker for worker, var in zip(workers['Evening Shift'], evening_checkboxes) if var.get()]
 
     # List of unassigned workers
     unassigned_day_workers = [worker for worker in workers['Day Shift'] if worker not in selected_day_workers]
-    unassigned_evening_workers = [worker for worker in workers['Evening Shift'] if
-                                  worker not in selected_evening_workers]
+    unassigned_evening_workers = [worker for worker in workers['Evening Shift'] if worker not in selected_evening_workers]
 
     # Shuffle the unassigned workers lists to randomize the assignment process
     random.shuffle(unassigned_day_workers)
@@ -338,49 +371,82 @@ def assign_workers():
         return
 
     assigned_workers_list = []  # List to store assigned workers
+    assigned_stations_per_worker = {}  # Dictionary to track assigned stations for each worker and interval
+
+    # Function to check if a station is already assigned to a worker in a specific interval
+    def is_station_assigned(worker, station, interval):
+        return assigned_stations_per_worker.get((worker, interval)) == station
 
     # Process selected workers from the day shift checkboxes
     for worker in selected_day_workers:
         intervals = intervals_day_shift
+        assigned_stations_per_worker[worker] = {}  # Initialize assigned stations for the worker
         for interval in intervals:
             available_stations = [s for s in workers['Day Shift'][worker] if
-                                  check_station_availability(s, interval, assigned_stations_intervals)]
+                                  check_station_availability(s, interval, assigned_stations_intervals) and not is_station_assigned(worker, s, interval)]
             if available_stations:
                 station = random.choice(available_stations)
                 assigned_stations_intervals[interval].append(station)
+                assigned_stations_per_worker[worker][interval] = station
                 assigned_workers_list.append((worker, station, interval))
             elif unassigned_day_workers:
                 # Assign to an unassigned worker if no available stations
                 unassigned_worker = unassigned_day_workers.pop()
                 assigned_workers_list.append((unassigned_worker, "No station available", interval))
+            elif assigned_workers_list:
+                # Find an empty station to assign the last worker
+                empty_stations = [s for s in stations if check_station_availability(s, interval, assigned_stations_intervals)]
+                if empty_stations:
+                    station = random.choice(empty_stations)
+                    assigned_stations_intervals[interval].append(station)
+                    assigned_workers_list.append((worker, station, interval))
 
     # Process selected workers from the evening shift checkboxes
     for worker in selected_evening_workers:
         intervals = intervals_evening_shift
+        assigned_stations_per_worker[worker] = {}  # Initialize assigned stations for the worker
         for interval in intervals:
             available_stations = [s for s in workers['Evening Shift'][worker] if
-                                  check_station_availability(s, interval, assigned_stations_intervals)]
+                                  check_station_availability(s, interval, assigned_stations_intervals) and not is_station_assigned(worker, s, interval)]
             if available_stations:
                 station = random.choice(available_stations)
                 assigned_stations_intervals[interval].append(station)
+                assigned_stations_per_worker[worker][interval] = station
                 assigned_workers_list.append((worker, station, interval))
             elif unassigned_evening_workers:
                 # Assign to an unassigned worker if no available stations
                 unassigned_worker = unassigned_evening_workers.pop()
                 assigned_workers_list.append((unassigned_worker, "No station available", interval))
+            elif assigned_workers_list:
+                # Find an empty station to assign the last worker
+                empty_stations = [s for s in stations if check_station_availability(s, interval, assigned_stations_intervals)]
+                if empty_stations:
+                    station = random.choice(empty_stations)
+                    assigned_stations_intervals[interval].append(station)
+                    assigned_workers_list.append((worker, station, interval))
 
-    # Get the team manager's name from the entry field
+    # Get the team manager's, Back up and evening shift name from the entry fields
     team_manager_name = tm_name_entry.get()
+    back_up_name = back_up_name_entry.get()
+    late_tm_name = late_tm_entry.get()
+
 
     # Save the assigned data with the team manager's name
-    save_assigned_data(assigned_workers_list, team_manager_name)
+    # Save the assigned data with the team manager's name
+    save_assigned_data(assigned_workers_list, team_manager_name, back_up_name, late_tm_name)
 
     # Update the assigned workers label to display the assigned workers
     assigned_workers_text = "\n".join(
         [f"{worker} - {station} ({interval})" for worker, station, interval in assigned_workers_list])
     assigned_workers_var.set(assigned_workers_text)
 
-    messagebox.showinfo("Success", "Workers assigned successfully.")
+    # Check if all workers have been assigned
+    if len(selected_day_workers) == len(workers['Day Shift']) and len(selected_evening_workers) == len(workers['Evening Shift']):
+        messagebox.showinfo("Success", "All workers have been assigned.")
+    else:
+        messagebox.showwarning("Warning", "Not all workers have been assigned to stations.")
+
+# Call the updated assign_workers function
 
 
 
@@ -401,7 +467,7 @@ def save_workers_data():
 
 # Save button to save workers data to file
 save_button = tk.Button(window, text="Save Workers Data", command=save_workers_data, bg='lightgrey')
-save_button.grid(row=6, column=0, columnspan=1, padx=pad_x, pady=pad_y)
+save_button.grid(row=8, column=0, columnspan=1, padx=pad_x, pady=pad_y)
 
 
 # Function to load workers data from file
@@ -421,53 +487,49 @@ def load_workers_data():
 
 # Load button to load workers data from file
 load_button = tk.Button(window, text="Load Workers Data", command=load_workers_data, bg='lightgrey')
-load_button.grid(row=5, column=0, columnspan=1, padx=pad_x, pady=pad_y)
+load_button.grid(row=7, column=0, columnspan=1, padx=pad_x, pady=pad_y)
+
+
 
 # Function to save assigned data to Excel file with stations, time intervals, and workers' names
-# Function to save assigned data to Excel file with stations, time intervals, and workers' names
-def save_assigned_data(data_list, team_manager_name):
+def save_assigned_data(data_list, team_manager_name, back_up_name, late_tm_name  ):
     wb = Workbook()
     ws = wb.active
 
     # Add the team manager's name in the first row
     ws.append(['Team Manager', team_manager_name])
+    ws.append(['Back up', back_up_name])
+    ws.append(['Sen vagt - Aften', late_tm_name])
+
+
+
+    combined_shifts = intervals_day_shift + intervals_evening_shift
 
     # Add a row for stations above the station names
-    stations_row = ['', 'Stations'] + ['6-10', '10-14', '14-18', '18-22:30']
+    stations_row = ['Week and day of the week', '4:00-6:00'] + combined_shifts
     ws.append(stations_row)
 
     # Create a dictionary to store assigned workers for each interval and station
-    assigned_workers_dict = {interval: {station: [] for station in stations} for interval in intervals_day_shift + intervals_evening_shift}
+    # Ensure combined_shifts is used to maintain the order
+    assigned_workers_dict = {interval: {station: [] for station in stations} for interval in combined_shifts}
 
     # Populate the assigned workers dictionary
     for worker, station, interval in data_list:
         if interval in assigned_workers_dict and station in assigned_workers_dict[interval]:
             assigned_workers_dict[interval][station].append(worker)
-        else:
-            messagebox.showerror("Error", f"Invalid station or interval: {station}, {interval}")
 
     # Iterate through each station and create rows for each station
     for station in stations:
-        row_data = [''] * (len(intervals_day_shift + intervals_evening_shift) + 2)  # Initialize row with empty values
-        row_data[1] = station  # Set the station name in the second column
+        row_data = [''] * (len(combined_shifts) + 2)  # Adjust for empty and station columns
+        row_data[0] = station  # Set the station name in the second column
 
-        # Iterate through each time interval
-        for interval in ['6-10', '10-14', '14-18', '18-22:30']:
+        # Iterate through each interval in the order of combined_shifts
+        for idx, interval in enumerate(combined_shifts):
             if interval in assigned_workers_dict and station in assigned_workers_dict[interval]:
-                workers_assigned = assigned_workers_dict[interval][
-                    station]  # Get assigned workers for this interval and station
-                if interval in intervals_day_shift:
-                    row_data[intervals_day_shift.index(interval) + 2] = ', '.join(workers_assigned)
-                elif interval in intervals_evening_shift:
-                    row_data[intervals_evening_shift.index(interval) + len(intervals_day_shift) + 2] = ', '.join(
-                        workers_assigned)
-            else:
-                if interval in intervals_day_shift:
-                    row_data[intervals_day_shift.index(interval) + 2] = ''
-                elif interval in intervals_evening_shift:
-                    row_data[intervals_evening_shift.index(interval) + len(intervals_day_shift) + 2] = ''
+                workers_assigned = assigned_workers_dict[interval][station]
+                row_data[idx + 2] = ', '.join(workers_assigned)  # Index +2 because of empty and station columns
 
-        ws.append(row_data)  # Add the completed row_data to the worksheet
+        ws.append(row_data)  # Add the completed row to the worksheet
 
     # Auto-fit columns after adding data
     for col in ws.columns:
@@ -486,7 +548,6 @@ def save_assigned_data(data_list, team_manager_name):
     assigned_file = 'assigned_data.xlsx'
     wb.save(assigned_file)
     messagebox.showinfo("Save", "Assigned data saved to Excel successfully.")
-
 
 
 
